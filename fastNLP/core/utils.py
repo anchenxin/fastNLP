@@ -773,6 +773,8 @@ def pretty_table_printer(dataset_or_ins) -> PrettyTable:
     except OSError:
         column = 144
         row = 11
+    print(column)
+    print(row)
     if type(dataset_or_ins).__name__ == "DataSet":
         x.field_names = list(dataset_or_ins.field_arrays.keys())
         c_size = len(x.field_names)
@@ -789,6 +791,8 @@ def pretty_table_printer(dataset_or_ins) -> PrettyTable:
 
     else:
         raise Exception("only accept  DataSet and Instance")
+    x.align = "l"
+
     return x
 
 
@@ -800,8 +804,20 @@ def sub_column(string: str, c: int, c_size: int, title: str) -> str:
     :param title: 列名
     :return: 对一个过长的列进行截断的结果
     """
-    avg = max(int(c / c_size), len(title))
+    avg = max(int(c / c_size / 2), len(title))
     string = str(string)
-    if len(string) > avg:
-        string = string[:(avg - 3)] + "..."
-    return string
+    res = ""
+    counter = 0
+    for char in string:
+        if ord(char) > 255:
+            counter += 2
+        else:
+            counter += 1
+        res += char
+        if counter > avg:
+            res = res + "..."
+            break
+    return res
+
+
+
